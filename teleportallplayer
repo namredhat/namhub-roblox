@@ -1,0 +1,138 @@
+-- Kiểm tra môi trường trước khi chạy
+local function _envCheck()
+    local _success, _result = pcall(function()
+        return game:IsLoaded() and game:GetService("Players").LocalPlayer ~= nil
+    end)
+    return _success and _result
+end
+
+if not _envCheck() then
+    return
+end
+
+-- Định nghĩa biến rối
+local _0x1 = game:GetService("Players")
+local _0x2 = game:GetService("UserInputService")
+local _0x3 = game:GetService("RunService")
+local _0x4 = _0x1.LocalPlayer
+
+-- Cấu hình mã hóa
+local _0x5 = {
+    _0x6 = UDim2.new(0, 120, 0, 40),
+    _0x7 = UDim2.new(0.5, -60, 0.5, -20),
+    _0x8 = "Teleport 👣",
+    _0x9 = "✅ Teleported!",
+    _0xA = "❌ Không đủ người",
+    _0xB = Color3.fromRGB(85, 170, 255),
+    _0xC = Color3.new(1, 1, 1),
+    _0xD = Enum.Font.GothamBold,
+    _0xE = 16,
+    _0xF = 1,
+    _0x10 = Vector3.new(2, 0, 2),
+    _0x11 = 8,
+    _0x12 = 1,
+}
+
+-- Tạo UI với tên rối
+local _0x13 = Instance.new("ScreenGui")
+_0x13.Name = "TGui" .. tostring(math.random(1000, 9999))
+_0x13.ResetOnSpawn = false
+_0x13.Parent = _0x4:WaitForChild("PlayerGui")
+
+local _0x14 = Instance.new("TextButton")
+_0x14.Size = _0x5._0x6
+_0x14.Position = _0x5._0x7
+_0x14.AnchorPoint = Vector2.new(0.5, 0.5)
+_0x14.Text = _0x5._0x8
+_0x14.BackgroundColor3 = _0x5._0xB
+_0x14.TextColor3 = _0x5._0xC
+_0x14.Font = _0x5._0xD
+_0x14.TextSize = _0x5._0xE
+_0x14.AutoButtonColor = true
+_0x14.Parent = _0x13
+
+-- Bo góc
+local _0x15 = Instance.new("UICorner")
+_0x15.CornerRadius = UDim.new(0, _0x5._0x11)
+_0x15.Parent = _0x14
+
+-- Kéo thả
+local _0x16 = false
+local _0x17, _0x18, _0x19
+
+local function _0x1A(_0x1B)
+    local _0x1C = (_0x1B.Position - _0x18) * _0x5._0x12
+    _0x14.Position = UDim2.new(
+        _0x19.X.Scale, _0x19.X.Offset + _0x1C.X,
+        _0x19.Y.Scale, _0x19.Y.Offset + _0x1C.Y
+    )
+end
+
+_0x14.InputBegan:Connect(function(_0x1D)
+    if _0x1D.UserInputType == Enum.UserInputType.MouseButton1 or _0x1D.UserInputType == Enum.UserInputType.Touch then
+        _0x16 = true
+        _0x18 = _0x1D.Position
+        _0x19 = _0x14.Position
+    end
+end)
+
+_0x14.InputEnded:Connect(function(_0x1E)
+    if _0x1E.UserInputType == Enum.UserInputType.MouseButton1 or _0x1E.UserInputType == Enum.UserInputType.Touch then
+        _0x16 = false
+    end
+end)
+
+_0x2.InputChanged:Connect(function(_0x1F)
+    if _0x16 and (_0x1F.UserInputType == Enum.UserInputType.MouseMovement or _0x1F.UserInputType == Enum.UserInputType.Touch) then
+        _0x17 = _0x1F
+        _0x1A(_0x1F)
+    end
+end)
+
+-- Hiển thị thông báo tạm thời
+local function _0x20(_0x21)
+    _0x14.Text = _0x21
+    task.delay(_0x5._0xF, function()
+        if _0x14 and _0x14.Parent then
+            _0x14.Text = _0x5._0x8
+        end
+    end)
+end
+
+-- Dịch chuyển ngẫu nhiên
+local function _0x22()
+    local _0x23 = _0x1:GetPlayers()
+    if #_0x23 <= 1 then
+        _0x20(_0x5._0xA)
+        return
+    end
+
+    local _0x24 = {}
+    for _, _0x25 in ipairs(_0x23) do
+        if _0x25 ~= _0x4 and _0x25.Character and _0x25.Character:FindFirstChild("HumanoidRootPart") then
+            table.insert(_0x24, _0x25)
+        end
+    end
+
+    if #_0x24 == 0 then
+        _0x20(_0x5._0xA)
+        return
+    end
+
+    local _0x26 = _0x24[math.random(1, #_0x24)]
+    local _0x27 = _0x4.Character and _0x4.Character:FindFirstChild("HumanoidRootPart")
+    local _0x28 = _0x26.Character:FindFirstChild("HumanoidRootPart")
+
+    if _0x27 and _0x28 then
+        _0x27.CFrame = _0x28.CFrame + _0x5._0x10
+        _0x20(_0x5._0x9)
+    end
+end
+
+-- Sự kiện nút
+_0x14.MouseButton1Click:Connect(_0x22)
+
+-- Xử lý tái sinh
+_0x4.CharacterAdded:Connect(function()
+    _0x13.Parent = _0x4:WaitForChild("PlayerGui")
+end)
