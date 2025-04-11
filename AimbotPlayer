@@ -1,0 +1,91 @@
+local _0x1 = game:GetService("Players")
+local _0x2 = game:GetService("RunService")
+local _0x3 = game:GetService("UserInputService")
+local _0x4 = _0x1.LocalPlayer
+if not _0x4 then error("Err0x1") end
+local _0x5 = _0x4:GetMouse()
+local _0x6 = workspace.CurrentCamera
+if not _0x5 or not _0x6 then error("Err0x2") end
+
+local _0x7 = false
+local _0x8 = nil
+local _0x9 = nil
+
+local _0xA = {
+    _0xB = 0.15,
+    _0xC = Enum.UserInputType.MouseButton2,
+    _0xD = 150
+}
+
+local function _0xE()
+    local _0xF = nil
+    local _0x10 = _0xA._0xD
+    for _, _0x11 in ipairs(_0x1:GetPlayers()) do
+        if _0x11 ~= _0x4 and _0x11.Character then
+            local _0x12 = _0x11.Character:FindFirstChild("Head")
+            local _0x13 = _0x11.Character:FindFirstChild("Humanoid")
+            local _0x14 = _0x11.Character:FindFirstChild("HumanoidRootPart")
+            if _0x12 and _0x13 and _0x14 and _0x13.Health > 0 then
+                local _0x15, _0x16 = _0x6:WorldToScreenPoint(_0x12.Position)
+                if _0x16 then
+                    local _0x17 = (Vector2.new(_0x5.X, _0x5.Y) - Vector2.new(_0x15.X, _0x15.Y)).Magnitude
+                    if _0x17 < _0x10 then
+                        _0x10 = _0x17
+                        _0xF = _0x12
+                    end
+                end
+            end
+        end
+    end
+    return _0xF
+end
+
+local function _0x18()
+    if _0x9 then _0x9:Disconnect(); _0x9 = nil end
+    _0x9 = _0x2.RenderStepped:Connect(function(_0x19)
+        if not _0x7 then
+            if _0x9 then _0x9:Disconnect(); _0x9 = nil end
+            return
+        end
+        if not _0x6 or (_0x8 and not _0x8:IsDescendantOf(workspace)) then
+            _0x8 = _0xE()
+        end
+        if _0x8 then
+            local _0x1A = _0x6.CFrame
+            local _0x1B = _0x8.Position
+            local _0x1C = CFrame.lookAt(_0x1A.Position, _0x1B)
+            local _0x1D = _0xA._0xB
+            _0x6.CFrame = _0x1A:Lerp(_0x1C, math.clamp(_0x1D * _0x19 * 60, 0.1, 0.3))
+        end
+    end)
+end
+
+_0x3.InputBegan:Connect(function(_0x1E, _0x1F)
+    if _0x1F then return end
+    if _0x1E.UserInputType == _0xA._0xC then
+        _0x7 = true
+        _0x8 = _0xE()
+        _0x18()
+    end
+end)
+
+_0x3.InputEnded:Connect(function(_0x1E)
+    if _0x1E.UserInputType == _0xA._0xC then
+        _0x7 = false
+        _0x8 = nil
+    end
+end)
+
+_0x4.CharacterAdded:Connect(function()
+    task.wait(1)
+    _0x7 = false
+    _0x8 = nil
+    if _0x9 then _0x9:Disconnect(); _0x9 = nil end
+end)
+
+-- Mã rác vô nghĩa để gây rối
+local _0x20 = math.random(1, 1000)
+if _0x20 > 0 then
+    local _0x21 = function() return end
+    _0x21()
+end
